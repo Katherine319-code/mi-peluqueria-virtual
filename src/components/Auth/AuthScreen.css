@@ -1,0 +1,187 @@
+
+.auth-header {
+  background: #ffffff;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-header img {
+  height: 70px;
+  object-fit: contain;
+}
+
+.auth-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f2c4d0;
+}
+
+.auth-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  padding: 16px;
+}
+
+.auth-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px 22px;
+  width: 50%;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+}
+
+.tab-row {
+  display: flex;
+  border-bottom: 2px solid #f0e0e6;
+  margin-bottom: 22px;
+}
+
+.tab {
+  flex: 1;
+  background: none;
+  border: none;
+  border-bottom: 2.5px solid transparent;
+  margin-bottom: -2px;
+  padding: 10px 0;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: 0.2s;
+}
+
+.tab-inactive {
+  color: #bbb;
+  border-bottom-color: transparent;
+}
+
+.tab-active-dark {
+  color: #1a1a2e;
+  border-bottom-color: #1a1a2e;
+  font-weight: 700;
+}
+
+.tab-active-pink {
+  color: #c4607a;
+  border-bottom-color: #c4607a;
+  font-weight: 700;
+}
+
+.field-group {
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 0;
+}
+
+.field-row .field-group {
+  flex: 1;
+  margin-bottom: 14px;
+}
+
+label {
+  font-size: 12px;
+  color: #555;
+  font-weight: 500;
+}
+
+input[type='text'],
+input[type='email'],
+input[type='password'] {
+  width: 100%;
+  border: 1.5px solid #e8dde0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  color: #333;
+  background: #fff;
+   box-sizing: border-box;
+}
+
+input:focus {
+  border-color: #c4607a;
+}
+
+.btn-dark {
+  width: 100%;
+  background: #1a1a2e;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: 0.2s;
+  margin-top: 4px;
+}
+
+.btn-dark:hover {
+  background: #2d2d50;
+}
+
+.btn-google {
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid #ddd;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+  font-family: 'DM Sans', sans-serif;
+  color: #333;
+  font-weight: 500;
+}
+.google-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+
+.center-link {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 13px;
+  color: #666;
+}
+
+.link-pink {
+  color: #c4607a;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.link-pink:hover {
+  text-decoration: underline;
+}
+
+.error-msg {
+  background: #fdecea;
+  color: #c62828;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  margin-bottom: 14px;
+  text-align: center;
+}

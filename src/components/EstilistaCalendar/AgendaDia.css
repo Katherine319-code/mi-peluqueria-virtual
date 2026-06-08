@@ -1,0 +1,159 @@
+.agenda-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.agenda-body {
+  flex: 1;
+  padding: 20px 24px;
+}
+
+.agenda-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.agenda-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.fecha-chip {
+  background: #1a1a2e;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.fecha-chip:hover { background: #2d2d50; }
+
+
+.agenda-lista {
+  background: #fdf5f7;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.agenda-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f5e8ec;
+  transition: .15s;
+}
+
+.agenda-item:last-child { border-bottom: none; }
+
+.agenda-item:hover { background: #f5e0e6; }
+
+.agenda-hora {
+  font-size: 16px;
+  font-weight: 700;
+  color: #c9822a;
+  min-width: 52px;
+}
+
+.agenda-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.agenda-servicio {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.agenda-cliente {
+  font-size: 13px;
+  color: #888;
+}
+
+.agenda-badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.badge-confirmada {
+  background: #e8a0b4;
+  color: #fff;
+}
+
+.badge-cancelada {
+  background: #fff;
+  border: 1.5px solid #e8a0b4;
+  color: #c4607a;
+}
+
+.badge-pendiente {
+  background: #FAEEDA;
+  color: #854F0B;
+}
+
+.agenda-loading,
+.agenda-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 60px 20px;
+  color: #888;
+  font-size: 14px;
+  text-align: center;
+}
+
+.btn-volver {
+  background: #e8a0b4;
+  color: #fff;
+  border: none;
+  border-radius: 22px;
+  padding: 12px 28px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  margin-top: 8px;
+  transition: .2s;
+}
+
+.btn-volver:hover { background: #c4607a; }
+
+.bottom-nav {
+  background: #fff;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0 16px;
+  border-top: 1px solid #f0e0e6;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  font-size: 11px;
+  color: #aaa;
+  padding: 0 20px;
+  font-family: inherit;
+}
+
+.nav-active { color: #c4607a; }
+.nav-icon-img { width: 26px; height: 26px; object-fit: contain; opacity: .45; }
+.nav-icon-active { opacity: 1; }
