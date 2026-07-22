@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Usuario, Servicio, Cita, Screen, Estilista } from './types';
-import { cancelarCitaApi, guardarCita, listarCitasCliente } from './services/api';
+import { cancelarCitaApi, guardarCita, listarCitasCliente, obtenerEstilistaPorUsuario } from './services/api';
 
 import AuthScreen     from './components/Auth/AuthScreen';
 import HomeScreen     from './components/Home/HomeScreen';
@@ -8,10 +8,10 @@ import ServicesScreen from './components/Services/ServicesScreen';
 import BookingScreen  from './components/Booking/BookingScreen';
 import PaymentScreen  from './components/Payment/PaymentScreen';
 import CitasScreen    from './components/Citas/CitasScreen';
-import EstilistaLogin  from './components/EstilistaAuth/EstilistaLogin';
 import CalendarioMes   from './components/EstilistaCalendar/CalendarioMes';
 import AgendaDia       from './components/EstilistaCalendar/AgendaDia';
 import AdminDashboard  from './components/Admin/AdminDashboard';
+import ProfileScreen  from './components/Profile/ProfileScreen';
 
 const App: React.FC = () => {
   const [screen, setScreen]             = useState<Screen>('auth');
@@ -34,9 +34,22 @@ const App: React.FC = () => {
     listarCitasCliente(user.id).then(setCitas).catch(() => setCitas([]));
   }, [user]);
 
-  const handleLogin = (u: Usuario) => {
+  const handleLogin = async (u: Usuario) => {
     setUser(u);
-    setScreen(u.rol === 'ADMIN' ? 'admin' : 'home');
+    if (u.rol === 'ADMIN') {
+      setScreen('admin');
+    } else if (u.rol === 'ESTILISTA' && u.id) {
+      try {
+        const est = await obtenerEstilistaPorUsuario(u.id);
+        setEstilista(est);
+        setScreen('estilista-calendario');
+      } catch {
+        alert('No se pudo cargar tu perfil de estilista.');
+        setScreen('auth');
+      }
+    } else {
+      setScreen('home');
+    }
   };
 
   const handleBookingConfirm = (cita: Omit<Cita, 'id' | 'estado'> & { estilistaId: number }) => {
@@ -69,10 +82,6 @@ const App: React.FC = () => {
     setCitas(prev => prev.filter(c => c.id !== id));
   };
 
-  const handleEstilistaLogin = (e: Estilista) => {
-    setEstilista(e); setScreen('estilista-calendario');
-  };
-
   const handleDiaClick = (fecha: string) => {
     setFechaSeleccionada(fecha); setScreen('estilista-agenda-dia');
   };
@@ -84,10 +93,7 @@ const App: React.FC = () => {
   return (
     <>
       {screen === 'auth' && (
-        <AuthScreen
-          onLogin={handleLogin}
-          onEstilistaPortal={() => setScreen('estilista-login')}
-        />
+        <AuthScreen onLogin={handleLogin} />
       )}
       {screen === 'home'     && user && <HomeScreen user={user} onNavigate={goTo} />}
       {screen === 'services' && <ServicesScreen onNavigate={goTo} onSelectService={setSelectedService} />}
@@ -95,8 +101,7 @@ const App: React.FC = () => {
       {screen === 'payment'  && pendingCita && <PaymentScreen cita={pendingCita} onNavigate={goTo} onPagar={handlePagar} />}
       {screen === 'citas'    && <CitasScreen citas={citas} justConfirmed={justConfirmed} onNavigate={goTo} onCancelar={handleCancelarCita} />}
       {screen === 'admin'    && user?.rol === 'ADMIN' && <AdminDashboard user={user} onLogout={() => goTo('auth')} />}
-
-      {screen === 'estilista-login' && <EstilistaLogin onLogin={handleEstilistaLogin} onVolver={() => setScreen('auth')} />}
+      {screen === 'profile'  && user && <ProfileScreen user={user} onNavigate={goTo} onLogout={() => goTo('auth')} />}
       {screen === 'estilista-calendario' && estilista && <CalendarioMes estilista={estilista} onDiaClick={handleDiaClick} onLogout={handleEstilistaLogout} />}
       {screen === 'estilista-agenda-dia' && estilista && <AgendaDia estilista={estilista} fecha={fechaSeleccionada} onVolver={() => setScreen('estilista-calendario')} onLogout={handleEstilistaLogout} />}
     </>

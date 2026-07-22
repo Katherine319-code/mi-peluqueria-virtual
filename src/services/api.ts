@@ -127,3 +127,13 @@ export const actualizarEstadoCita = async (id: number, estado: Cita['estado']): 
 export const cancelarCitaApi = async (id: number): Promise<void> => {
   await api.delete(`/api/citas/${id}`);
 };
+
+export const obtenerEstilistaPorUsuario = async (usuarioId: number): Promise<Estilista> => {
+  const { data } = await api.get(`/api/estilistas/usuario/${usuarioId}`);
+  return { ...data, apellidos: data.apellidos || data.apellido || '' };
+};
+
+export const loginConGoogle = async (idToken: string): Promise<AuthResponse> => {
+  const { data } = await api.post<AuthResponse>('/api/auth/google', { token: idToken });
+  return data;
+};

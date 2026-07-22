@@ -185,3 +185,13 @@ input:focus {
   margin-bottom: 14px;
   text-align: center;
 }
+
+.success-msg {
+  color: #2e7d32;
+  background: #e8f5e9;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  text-align: center;
+}

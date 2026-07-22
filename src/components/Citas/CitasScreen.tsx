@@ -73,7 +73,7 @@ const CitasScreen: React.FC<Props> = ({ citas, justConfirmed, onNavigate, onCanc
       <div className="nav-item" onClick={() => onNavigate('services')}>
         <img src={servicesIcon} alt="Servicios" className="nav-icon-img" /><span>Servicios</span>
       </div>
-      <div className="nav-item" onClick={() => onNavigate('auth')}>
+      <div className="nav-item" onClick={() => onNavigate('profile')}>
         <img src={userIcon} alt="Perfil" className="nav-icon-img" /><span>Perfil</span>
       </div>
     </nav>

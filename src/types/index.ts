@@ -1,3 +1,4 @@
+//index.ts
 export type Rol = 'CLIENTE' | 'ESTILISTA' | 'ADMIN';
 
 export interface Usuario {
@@ -69,6 +70,6 @@ export type Screen =
   | 'payment'
   | 'citas'
   | 'admin'
-  | 'estilista-login'
+  | 'profile'
   | 'estilista-calendario'
   | 'estilista-agenda-dia';

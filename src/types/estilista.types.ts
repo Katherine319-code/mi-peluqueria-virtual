@@ -1,3 +1,4 @@
+// estilista.types.ts
 export interface Estilista {
   id: number;
   nombre: string;

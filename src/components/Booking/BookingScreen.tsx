@@ -133,7 +133,7 @@ const [hora, setHora] = useState('14:00');
           <img src={servicesIcon} alt="Servicios" className="nav-icon-img nav-icon-active" />
           <span>Servicios</span>
         </div>
-        <div className="nav-item" onClick={() => onNavigate('auth')}>
+        <div className="nav-item" onClick={() => onNavigate('profile')}>
           <img src={userIcon} alt="Perfil" className="nav-icon-img" />
           <span>Perfil</span>
         </div>

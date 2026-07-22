@@ -1,24 +1,88 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Usuario, LoginRequest } from '../../types';
-import { registrarUsuario, loginUsuario } from '../../services/api';
+import { registrarUsuario, loginUsuario, loginConGoogle } from '../../services/api';
+import { GOOGLE_CLIENT_ID } from '../../config';
 import './AuthScreen.css';
 import logo from '../../assets/img/logo.png';
 import google from '../../assets/img/google.png';
 
 interface Props {
   onLogin: (user: Usuario) => void;
-  onEstilistaPortal: () => void;
 }
 
-const AuthScreen: React.FC<Props> = ({ onLogin, onEstilistaPortal }) => {
+declare global {
+  interface Window {
+    google?: any;
+  }
+}
+
+const AuthScreen: React.FC<Props> = ({ onLogin }) => {
   const [tab, setTab] = useState<'login' | 'register'>('login');
   const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
 
   const [loginData, setLoginData] = useState<LoginRequest>({ correo: '', contrasena: '' });
 
   const [regData, setRegData] = useState<Omit<Usuario, 'id'> & { confirmar: string }>({
     nombres: '', apellidos: '', cedula: '', correo: '', contrasena: '', confirmar: '',
   });
+
+  const googleBtnRef = useRef<HTMLDivElement>(null);
+const onLoginRef = useRef(onLogin);
+useEffect(() => {
+  onLoginRef.current = onLogin;
+}, [onLogin]);
+
+  // ── Inicializa Google Identity Services una sola vez ──────────────────────
+  useEffect(() => {
+    const initGoogle = () => {
+      if (!window.google || !googleBtnRef.current) return;
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: async (response: { credential: string }) => {
+          setError('');
+          try {
+            const auth = await loginConGoogle(response.credential);
+            onLoginRef.current({
+              id: auth.id,
+              nombres: auth.nombre,
+              apellidos: auth.apellido,
+              correo: auth.correo,
+              token: auth.token,
+              rol: auth.rol,
+            });
+          } catch (err: any) {
+            setError(err?.response?.data || 'No se pudo iniciar sesion con Google.');
+          }
+        },
+      });
+      // Renderiza el boton real de Google, oculto, para poder "disparlo"
+      // desde nuestros botones personalizados con el mismo estilo del resto de la app.
+      window.google.accounts.id.renderButton(googleBtnRef.current, {
+        type: 'standard',
+        theme: 'outline',
+        size: 'large',
+      });
+    };
+
+    if (window.google) {
+      initGoogle();
+    } else {
+      const interval = setInterval(() => {
+        if (window.google) {
+          clearInterval(interval);
+          initGoogle();
+        }
+      }, 200);
+      return () => clearInterval(interval);
+    }
+  }, []);
+
+  const handleGoogleClick = () => {
+    // Busca el boton real (invisible) que Google renderizo y le hace clic
+    const realBtn = googleBtnRef.current?.querySelector('div[role="button"]') as HTMLElement | null;
+    realBtn?.click();
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,6 +106,7 @@ const AuthScreen: React.FC<Props> = ({ onLogin, onEstilistaPortal }) => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccessMsg('');
     const { confirmar, ...usuario } = regData;
     if (!usuario.nombres || !usuario.correo || !usuario.contrasena) { setError('Completa todos los campos'); return; }
     if (usuario.contrasena !== confirmar) { setError('Las contraseñas no coinciden'); return; }
@@ -49,7 +114,8 @@ const AuthScreen: React.FC<Props> = ({ onLogin, onEstilistaPortal }) => {
       await registrarUsuario(usuario);
       setTab('login');
       setError('');
-      alert('¡Registro exitoso! Ahora inicia sesión.');
+      setLoginData({ correo: usuario.correo, contrasena: '' });
+      setSuccessMsg('¡Registro exitoso! Ahora inicia sesión.');
     } catch (err: any) {
       setError(err?.response?.data || 'No se pudo conectar al servidor.');
     }
@@ -61,30 +127,29 @@ return (
     <header className="auth-header">
       <img src={logo} alt="Mi Peluquería Virtual" />
     </header>
-     
+
+    {/* Boton real de Google, invisible: lo disparamos desde nuestros botones estilizados */}
+    <div ref={googleBtnRef} style={{ position: 'absolute', top: -9999, left: -9999 }} />
+
       <div className="auth-body">
         <div className="auth-card">
           <div className="tab-row">
             <button
               className={`tab ${tab === 'login' ? 'tab-active-dark' : 'tab-inactive'}`}
-              onClick={() => { setTab('login'); setError(''); }}
+              onClick={() => { setTab('login'); setError(''); setSuccessMsg(''); }}
             >
               Iniciar Sesión
             </button>
             <button
               className={`tab ${tab === 'register' ? 'tab-active-pink' : 'tab-inactive'}`}
-              onClick={() => { setTab('register'); setError(''); }}
+              onClick={() => { setTab('register'); setError(''); setSuccessMsg(''); }}
             >
               Regístrate
             </button>
-            <div style={{ textAlign:'center', marginTop:20, paddingTop:16, borderTop:'1px solid #f0e0e6' }}>
-  <span onClick={onEstilistaPortal} style={{ fontSize:13, color:'#c4607a', cursor:'pointer', fontWeight:500 }}>
-    Eres estilista? Ingresa aqui
-  </span>
-</div>
           </div>
 
           {error && <div className="error-msg">{error}</div>}
+          {successMsg && <div className="success-msg">{successMsg}</div>}
 
           {tab === 'login' && (
             <form onSubmit={handleLogin}>
@@ -107,7 +172,7 @@ return (
                 />
               </div>
               <button type="submit" className="btn-dark">Iniciar Sesión</button>
-             <button type="button" className="btn-google">
+             <button type="button" className="btn-google" onClick={handleGoogleClick}>
                <img src={google} alt="Google" className="google-icon" />
                 Continuar con Google
               </button>
@@ -158,7 +223,7 @@ return (
                 </div>
               </div>
               <button type="submit" className="btn-dark">Registrarse</button>
-              <button type="button" className="btn-google">
+              <button type="button" className="btn-google" onClick={handleGoogleClick}>
                <img src={google} alt="Google" className="google-icon" />
                 Continuar con Google
               </button>

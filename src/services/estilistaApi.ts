@@ -6,16 +6,6 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-export const loginEstilista = async (
-  correo: string,
-  contrasena: string
-): Promise<Estilista> => {
-  const { data } = await api.post<Estilista>('/api/estilistas/login', {
-    correo,
-    contrasena,
-  });
-  return data;
-};
 
 export const getAgendaDia = async (
   estilistaId: number,
