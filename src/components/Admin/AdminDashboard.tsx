@@ -4,6 +4,8 @@ import {
   actualizarEstadoCita,
   crearEstilista,
   crearServicio,
+  desactivarEstilista,
+  desactivarServicio,
   listarEstilistas,
   listarServicios,
   listarTodasLasCitas,
@@ -45,6 +47,8 @@ const AdminDashboard: React.FC<Props> = ({ user, onLogout }) => {
     cargarDatos().catch(() => setMensaje('No se pudo cargar la informacion del administrador.'));
   }, []);
 
+  const estilistasActivos = estilistas.filter(e => e.activo !== false);
+
   const guardarServicio = async (event: React.FormEvent) => {
     event.preventDefault();
     await crearServicio({ ...servicioForm });
@@ -64,6 +68,23 @@ const AdminDashboard: React.FC<Props> = ({ user, onLogout }) => {
   const cambiarEstado = async (cita: Cita, estado: Cita['estado']) => {
     await actualizarEstadoCita(cita.id, estado);
     setMensaje(`Cita marcada como ${estado.toLowerCase()}.`);
+    cargarDatos();
+  };
+
+  const eliminarServicio = async (servicio: Servicio) => {
+    const confirmar = window.confirm(`¿Eliminar el servicio "${servicio.nombre}"? Ya no aparecera disponible para nuevas citas.`);
+    if (!confirmar) return;
+    await desactivarServicio(servicio.id);
+    setMensaje(`Servicio "${servicio.nombre}" eliminado.`);
+    cargarDatos();
+  };
+
+  const eliminarEstilista = async (estilista: Estilista) => {
+    const nombreCompleto = `${estilista.nombre} ${estilista.apellidos}`;
+    const confirmar = window.confirm(`¿Eliminar a la estilista "${nombreCompleto}"? Ya no podra iniciar sesion ni recibir nuevas citas.`);
+    if (!confirmar) return;
+    await desactivarEstilista(estilista.id);
+    setMensaje(`Estilista "${nombreCompleto}" eliminada.`);
     cargarDatos();
   };
 
@@ -88,7 +109,7 @@ const AdminDashboard: React.FC<Props> = ({ user, onLogout }) => {
 
         <section className="admin-stats">
           <div><span>{servicios.length}</span><p>Servicios</p></div>
-          <div><span>{estilistas.length}</span><p>Estilistas</p></div>
+          <div><span>{estilistasActivos.length}</span><p>Estilistas</p></div>
           <div><span>{citas.length}</span><p>Citas</p></div>
         </section>
 
@@ -139,11 +160,35 @@ const AdminDashboard: React.FC<Props> = ({ user, onLogout }) => {
         </section>
 
         <section className="admin-panel admin-table-panel">
+          <h2>Estilistas</h2>
+          <div className="admin-table">
+            {estilistasActivos.map(estilista => (
+              <div className="admin-row" key={estilista.id}>
+                <div>
+                  <strong>{estilista.nombre} {estilista.apellidos}</strong>
+                  <span>{estilista.correo}</span>
+                </div>
+                <span>{estilista.especialidad || 'Sin especialidad'}</span>
+                <span>{estilista.disponible ? 'Disponible' : 'No disponible'}</span>
+                <div className="admin-actions">
+                  <button onClick={() => eliminarEstilista(estilista)}>Eliminar</button>
+                </div>
+              </div>
+            ))}
+            {estilistasActivos.length === 0 && <p className="admin-empty">Aun no hay estilistas registrados.</p>}
+          </div>
+        </section>
+
+        <section className="admin-panel admin-table-panel">
           <h2>Servicios activos</h2>
           <div className="admin-list">
             {servicios.map(servicio => (
-              <span key={servicio.id}>{servicio.nombre} · ${servicio.precio.toLocaleString('es-CO')} · {servicio.duracion} min</span>
+              <span key={servicio.id} className="admin-servicio-chip">
+                {servicio.nombre} · ${servicio.precio.toLocaleString('es-CO')} · {servicio.duracion} min
+                <button className="admin-chip-eliminar" onClick={() => eliminarServicio(servicio)}>✕</button>
+              </span>
             ))}
+            {servicios.length === 0 && <p className="admin-empty">Aun no hay servicios registrados.</p>}
           </div>
         </section>
       </main>
@@ -152,3 +197,4 @@ const AdminDashboard: React.FC<Props> = ({ user, onLogout }) => {
 };
 
 export default AdminDashboard;
+

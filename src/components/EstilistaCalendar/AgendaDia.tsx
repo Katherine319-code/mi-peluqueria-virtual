@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import logo from '../../assets/img/logo.png';
-import homeIcon from '../../assets/img/home.png';
 import calendarIcon from '../../assets/img/calendar.png';
 import userIcon from '../../assets/img/user.png';
 import { getAgendaDia } from '../../services/estilistaApi';
@@ -9,12 +8,13 @@ import './AgendaDia.css';
 
 interface Props {
   estilista: Estilista;
-  fecha: string;          
+  fecha: string;
   onVolver: () => void;
   onLogout: () => void;
+  onPerfil: () => void;
 }
 
-const AgendaDia: React.FC<Props> = ({ estilista, fecha, onVolver, onLogout }) => {
+const AgendaDia: React.FC<Props> = ({ estilista, fecha, onVolver, onLogout, onPerfil }) => {
   const [citas, setCitas]     = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -48,10 +48,6 @@ const AgendaDia: React.FC<Props> = ({ estilista, fecha, onVolver, onLogout }) =>
       <header className="cal-header">
         <img src={logo} alt="Mi Peluquería Virtual" className="cal-logo" />
         <div className="cal-header-right">
-          <div className="search-bar-inline">
-            <span className="search-icon">🔍</span>
-            <input placeholder="Buscar servicios, clientes, citas..." />
-          </div>
           <span className="cal-estilista-name">{nombreCompleto}</span>
         </div>
       </header>
@@ -96,13 +92,10 @@ const AgendaDia: React.FC<Props> = ({ estilista, fecha, onVolver, onLogout }) =>
       </div>
 
       <nav className="bottom-nav">
-        <div className="nav-item" onClick={onLogout}>
-          <img src={homeIcon} alt="Inicio" className="nav-icon-img" /><span>Inicio</span>
-        </div>
         <div className="nav-item nav-active" onClick={onVolver}>
           <img src={calendarIcon} alt="Calendario" className="nav-icon-img nav-icon-active" /><span>Calendario</span>
         </div>
-        <div className="nav-item" onClick={onLogout}>
+        <div className="nav-item" onClick={onPerfil}>
           <img src={userIcon} alt="Perfil" className="nav-icon-img" /><span>Perfil</span>
         </div>
       </nav>

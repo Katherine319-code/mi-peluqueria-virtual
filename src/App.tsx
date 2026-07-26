@@ -10,8 +10,9 @@ import PaymentScreen  from './components/Payment/PaymentScreen';
 import CitasScreen    from './components/Citas/CitasScreen';
 import CalendarioMes   from './components/EstilistaCalendar/CalendarioMes';
 import AgendaDia       from './components/EstilistaCalendar/AgendaDia';
+import EstilistaPerfil from './components/EstilistaCalendar/EstilistaPerfil';
 import AdminDashboard  from './components/Admin/AdminDashboard';
-import ProfileScreen  from './components/Profile/ProfileScreen';
+import ProfileScreen   from './components/Profile/ProfileScreen';
 
 const App: React.FC = () => {
   const [screen, setScreen]             = useState<Screen>('auth');
@@ -100,10 +101,33 @@ const App: React.FC = () => {
       {screen === 'booking'  && selectedService && <BookingScreen servicio={selectedService} onNavigate={goTo} onConfirm={handleBookingConfirm} />}
       {screen === 'payment'  && pendingCita && <PaymentScreen cita={pendingCita} onNavigate={goTo} onPagar={handlePagar} />}
       {screen === 'citas'    && <CitasScreen citas={citas} justConfirmed={justConfirmed} onNavigate={goTo} onCancelar={handleCancelarCita} />}
-      {screen === 'admin'    && user?.rol === 'ADMIN' && <AdminDashboard user={user} onLogout={() => goTo('auth')} />}
       {screen === 'profile'  && user && <ProfileScreen user={user} onNavigate={goTo} onLogout={() => goTo('auth')} />}
-      {screen === 'estilista-calendario' && estilista && <CalendarioMes estilista={estilista} onDiaClick={handleDiaClick} onLogout={handleEstilistaLogout} />}
-      {screen === 'estilista-agenda-dia' && estilista && <AgendaDia estilista={estilista} fecha={fechaSeleccionada} onVolver={() => setScreen('estilista-calendario')} onLogout={handleEstilistaLogout} />}
+      {screen === 'admin'    && user?.rol === 'ADMIN' && <AdminDashboard user={user} onLogout={() => goTo('auth')} />}
+
+      {screen === 'estilista-calendario' && estilista && (
+        <CalendarioMes
+          estilista={estilista}
+          onDiaClick={handleDiaClick}
+          onLogout={handleEstilistaLogout}
+          onPerfil={() => setScreen('estilista-perfil')}
+        />
+      )}
+      {screen === 'estilista-agenda-dia' && estilista && (
+        <AgendaDia
+          estilista={estilista}
+          fecha={fechaSeleccionada}
+          onVolver={() => setScreen('estilista-calendario')}
+          onLogout={handleEstilistaLogout}
+          onPerfil={() => setScreen('estilista-perfil')}
+        />
+      )}
+      {screen === 'estilista-perfil' && estilista && (
+        <EstilistaPerfil
+          estilista={estilista}
+          onVolverCalendario={() => setScreen('estilista-calendario')}
+          onLogout={handleEstilistaLogout}
+        />
+      )}
     </>
   );
 };

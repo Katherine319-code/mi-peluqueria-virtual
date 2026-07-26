@@ -10,6 +10,8 @@ export interface Usuario {
   contrasena?: string;
   token?: string;
   rol?: Rol;
+  telefono?: string;
+  whatsapp?: string;
 }
 
 export interface LoginRequest {
@@ -73,3 +75,4 @@ export type Screen =
   | 'profile'
   | 'estilista-calendario'
   | 'estilista-agenda-dia';
+  | 'estilista-perfil';

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import logo from '../../assets/img/logo.png';
-import homeIcon from '../../assets/img/home.png';
 import calendarIcon from '../../assets/img/calendar.png';
 import userIcon from '../../assets/img/user.png';
 import { getAgendaMes } from '../../services/estilistaApi';
@@ -11,13 +10,14 @@ interface Props {
   estilista: Estilista;
   onDiaClick: (fecha: string) => void;
   onLogout: () => void;
+  onPerfil: () => void;
 }
 
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
                'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const DIAS  = ['LUN','MAR','MIÉ','JUE','VIE','SÁB','DOM'];
 
-const CalendarioMes: React.FC<Props> = ({ estilista, onDiaClick, onLogout }) => {
+const CalendarioMes: React.FC<Props> = ({ estilista, onDiaClick, onLogout, onPerfil }) => {
   const hoy   = new Date();
   const [mes,  setMes]  = useState(hoy.getMonth());
   const [anio, setAnio] = useState(hoy.getFullYear());
@@ -72,10 +72,6 @@ const CalendarioMes: React.FC<Props> = ({ estilista, onDiaClick, onLogout }) => 
       <header className="cal-header">
         <img src={logo} alt="Mi Peluquería Virtual" className="cal-logo" />
         <div className="cal-header-right">
-          <div className="search-bar-inline">
-            <span className="search-icon">🔍</span>
-            <input placeholder="Buscar servicios, clientes, citas..." />
-          </div>
           <span className="cal-estilista-name">{nombreCompleto}</span>
         </div>
       </header>
@@ -120,13 +116,10 @@ const CalendarioMes: React.FC<Props> = ({ estilista, onDiaClick, onLogout }) => 
       </div>
 
       <nav className="bottom-nav">
-        <div className="nav-item" onClick={onLogout}>
-          <img src={homeIcon} alt="Inicio" className="nav-icon-img" /><span>Inicio</span>
-        </div>
         <div className="nav-item nav-active">
           <img src={calendarIcon} alt="Calendario" className="nav-icon-img nav-icon-active" /><span>Calendario</span>
         </div>
-        <div className="nav-item" onClick={onLogout}>
+        <div className="nav-item" onClick={onPerfil}>
           <img src={userIcon} alt="Perfil" className="nav-icon-img" /><span>Perfil</span>
         </div>
       </nav>
@@ -135,4 +128,3 @@ const CalendarioMes: React.FC<Props> = ({ estilista, onDiaClick, onLogout }) => 
 };
 
 export default CalendarioMes;
-

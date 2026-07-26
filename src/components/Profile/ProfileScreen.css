@@ -75,3 +75,52 @@
 .profile-logout-btn:hover {
   background: #ab4f67;
 }
+
+.profile-input {
+  border: 1px solid #f0e0e6;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 15px;
+  margin-top: 4px;
+}
+
+.profile-edit-btn {
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  color: #c4607a;
+  border: 1px solid #c4607a;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.profile-edit-btn:hover {
+  background: #fdf1f4;
+}
+
+.profile-save-btn {
+  width: 100%;
+  max-width: 400px;
+  background: #2e7d32;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.profile-save-btn:hover {
+  background: #256428;
+}
+
+.profile-save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

@@ -189,3 +189,22 @@
     grid-template-columns: 1fr;
   }
 }
+
+.admin-servicio-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-chip-eliminar {
+  background: none;
+  border: none;
+  color: #c4607a;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0 4px;
+}
+
+.admin-chip-eliminar:hover {
+  color: #ab4f67;
+}

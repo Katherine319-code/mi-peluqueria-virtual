@@ -137,3 +137,24 @@ export const loginConGoogle = async (idToken: string): Promise<AuthResponse> => 
   const { data } = await api.post<AuthResponse>('/api/auth/google', { token: idToken });
   return data;
 };
+
+export const desactivarServicio = async (id: number): Promise<void> => {
+  await api.put(`/api/servicios/${id}/desactivar`);
+};
+
+export const desactivarEstilista = async (id: number): Promise<void> => {
+  await api.put(`/api/estilistas/${id}/desactivar`);
+};
+
+export const obtenerUsuario = async (id: number): Promise<any> => {
+  const { data } = await api.get(`/api/usuarios/${id}`);
+  return data;
+};
+
+export const actualizarContacto = async (
+  id: number,
+  datos: { nombre: string; apellido: string; correo: string; telefono?: string; whatsapp?: string }
+): Promise<any> => {
+  const { data } = await api.put(`/api/usuarios/${id}`, datos);
+  return data;
+};

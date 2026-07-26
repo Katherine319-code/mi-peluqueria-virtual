@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Usuario, Screen } from '../../types';
+import { obtenerUsuario, actualizarContacto } from '../../services/api';
 import logo from '../../assets/img/logo.png';
 import homeIcon from '../../assets/img/home.png';
 import calendarIcon from '../../assets/img/calendar.png';
@@ -15,6 +16,45 @@ interface Props {
 
 const ProfileScreen: React.FC<Props> = ({ user, onNavigate, onLogout }) => {
   const initials = (user.nombres?.[0] || 'M') + (user.apellidos?.[0] || 'P');
+
+  const [telefono, setTelefono] = useState('');
+  const [whatsapp, setWhatsapp] = useState('');
+  const [editando, setEditando] = useState(false);
+  const [guardando, setGuardando] = useState(false);
+  const [mensaje, setMensaje] = useState('');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (!user.id) return;
+    obtenerUsuario(user.id)
+      .then(data => {
+        setTelefono(data.telefono || '');
+        setWhatsapp(data.whatsapp || '');
+      })
+      .catch(() => {});
+  }, [user.id]);
+
+  const guardarContacto = async () => {
+    if (!user.id) return;
+    setGuardando(true);
+    setError('');
+    setMensaje('');
+    try {
+      await actualizarContacto(user.id, {
+        nombre: user.nombres,
+        apellido: user.apellidos,
+        correo: user.correo,
+        telefono,
+        whatsapp,
+      });
+      setMensaje('Datos actualizados correctamente.');
+      setEditando(false);
+    } catch (err: any) {
+      setError(err?.response?.data?.message || 'No se pudo actualizar la informacion.');
+    } finally {
+      setGuardando(false);
+    }
+  };
 
   return (
     <div className="profile-screen">
@@ -37,7 +77,50 @@ const ProfileScreen: React.FC<Props> = ({ user, onNavigate, onLogout }) => {
               <span className="profile-value">{user.cedula}</span>
             </div>
           )}
+
+          <div className="profile-field">
+            <span className="profile-label">Telefono</span>
+            {editando ? (
+              <input
+                className="profile-input"
+                type="tel"
+                placeholder="Ej: 3001234567"
+                value={telefono}
+                onChange={e => setTelefono(e.target.value)}
+              />
+            ) : (
+              <span className="profile-value">{telefono || 'No registrado'}</span>
+            )}
+          </div>
+
+          <div className="profile-field">
+            <span className="profile-label">WhatsApp</span>
+            {editando ? (
+              <input
+                className="profile-input"
+                type="tel"
+                placeholder="Ej: 3001234567"
+                value={whatsapp}
+                onChange={e => setWhatsapp(e.target.value)}
+              />
+            ) : (
+              <span className="profile-value">{whatsapp || 'No registrado'}</span>
+            )}
+          </div>
         </div>
+
+        {error && <div className="error-msg">{error}</div>}
+        {mensaje && <div className="success-msg">{mensaje}</div>}
+
+        {editando ? (
+          <button className="profile-save-btn" onClick={guardarContacto} disabled={guardando}>
+            {guardando ? 'Guardando...' : 'Guardar cambios'}
+          </button>
+        ) : (
+          <button className="profile-edit-btn" onClick={() => { setEditando(true); setMensaje(''); }}>
+            Editar telefono y WhatsApp
+          </button>
+        )}
 
         <button className="profile-logout-btn" onClick={onLogout}>
           Cerrar sesion
@@ -67,3 +150,4 @@ const ProfileScreen: React.FC<Props> = ({ user, onNavigate, onLogout }) => {
 };
 
 export default ProfileScreen;
+
