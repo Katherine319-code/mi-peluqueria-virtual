@@ -1,4 +1,5 @@
 .admin-screen {
+  font-family: 'Poppins', sans-serif;
   min-height: 100vh;
   background: #f8f5f7;
   color: #2f2830;
@@ -32,6 +33,7 @@
   border-radius: 8px;
   background: #f2c4d0;
   color: #fff;
+  text-shadow: 0px 0px 1px #000000;
   font-weight: 700;
   padding: 10px 16px;
   cursor: pointer;
@@ -173,23 +175,6 @@
   margin-bottom: 0;
 }
 
-@media (max-width: 820px) {
-  .admin-header,
-  .admin-title-row {
-    align-items: flex-start;
-    flex-direction: column;
-    height: auto;
-    padding: 18px;
-  }
-
-  .admin-stats,
-  .admin-grid,
-  .admin-two-cols,
-  .admin-row {
-    grid-template-columns: 1fr;
-  }
-}
-
 .admin-servicio-chip {
   display: inline-flex;
   align-items: center;
@@ -207,4 +192,53 @@
 
 .admin-chip-eliminar:hover {
   color: #ab4f67;
+}
+
+.admin-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.admin-pagination button {
+  background: #fff;
+  border: 1px solid #eadfe4;
+  color: #b94f6d;
+  font-weight: 600;
+}
+
+.admin-pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.admin-pagination-info {
+  font-size: 13px;
+  color: #6b5c63;
+}
+
+@media (max-width: 820px) {
+  .admin-header,
+  .admin-title-row {
+    align-items: flex-start;
+    flex-direction: column;
+    height: auto;
+    padding: 18px;
+  }
+
+  .admin-stats,
+  .admin-grid,
+  .admin-two-cols,
+  .admin-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .admin-pagination {
+    flex-direction: column;
+    gap: 8px;
+  }
 }

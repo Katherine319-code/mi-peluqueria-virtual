@@ -1,10 +1,10 @@
-
 .auth-header {
   background: #ffffff;
   height: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: 'Poppins', sans-serif;
 }
 
 .auth-header img {
@@ -23,7 +23,7 @@
   flex: 1;
   display: flex;
   align-items: center;
-  justify-content: center; 
+  justify-content: center;
   padding: 16px;
 }
 
@@ -31,8 +31,10 @@
   background: #ffffff;
   border-radius: 20px;
   padding: 24px 22px;
-  width: 50%;
+  width: 100%;
+  max-width: 400px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 }
 
 .tab-row {
@@ -88,6 +90,7 @@
 .field-row .field-group {
   flex: 1;
   margin-bottom: 14px;
+  min-width: 0;
 }
 
 label {
@@ -194,4 +197,55 @@ input:focus {
   margin-bottom: 12px;
   font-size: 14px;
   text-align: center;
+}
+
+.auth-subtitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2a2a2a;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.auth-hint {
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+/* ── Celulares muy pequeños (320px - 380px) ─────────────────────────────── */
+@media (max-width: 380px) {
+  .auth-card {
+    padding: 20px 16px;
+  }
+
+  .field-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .auth-header img {
+    height: 56px;
+  }
+}
+
+/* ── Tablets (481px - 768px) ─────────────────────────────────────────────── */
+@media (min-width: 481px) and (max-width: 768px) {
+  .auth-card {
+    max-width: 440px;
+    padding: 32px 30px;
+  }
+}
+
+/* ── Desktop (769px en adelante) ────────────────────────────────────────── */
+@media (min-width: 769px) {
+  .auth-card {
+    max-width: 440px;
+    padding: 36px 34px;
+  }
+
+  .auth-header img {
+    height: 76px;
+  }
 }

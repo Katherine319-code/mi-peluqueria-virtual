@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700;800&display=swap');
 
 :root {
   --pink-bg: #f2c4d0;
@@ -22,7 +22,7 @@
 }
 
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Poppins', sans-serif;
   background: var(--pink-bg);
   min-height: 100vh;
   max-width: 100%;
@@ -31,13 +31,20 @@ body {
 }
 
 button {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Poppins', sans-serif;
   cursor: pointer;
   border: none;
 }
 
 input, select {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Refuerzo: cualquier titulo en cualquier pantalla usa siempre la misma
+   fuente moderna, sin importar que etiqueta HTML use cada componente. */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
 }
 
 .logo-header {
@@ -57,7 +64,7 @@ input, select {
 }
 
 .logo-main {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Playfair Display', sans-serif;
   font-size: 24px;
   font-weight: 700;
   color: var(--pink-dark);
@@ -89,13 +96,18 @@ input, select {
 }
 
 .bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   background: var(--white);
   display: flex;
   justify-content: space-around;
   padding: 10px 0 16px;
   border-top: 1px solid #f0e0e6;
-  position: sticky;
-  bottom: 0;
+  box-sizing: border-box;
+  z-index: 100;
 }
 
 .nav-item {
@@ -190,7 +202,8 @@ input, select {
 
 .header-back {
   background: var(--white);
-  width: 300px;
+  width: 100%;
+  max-width: 300px;
   display: flex;
   align-items: center;
   gap: 10px;

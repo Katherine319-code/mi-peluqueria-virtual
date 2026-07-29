@@ -1,9 +1,9 @@
-
 .citas-screen {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background: #ffffff;
+  font-family: 'Poppins', sans-serif;
 }
 
 .auth-header {
@@ -23,7 +23,8 @@
 }
 
 .citas-search-input {
-  width: 30%;
+  width: 100%;
+  max-width: 320px;
   background: #fff;
   border: none;
   border-radius: 22px;
@@ -32,11 +33,12 @@
   color: #555;
   outline: none;
   font-family: inherit;
+  box-sizing: border-box;
 }
 
 .citas-content {
   flex: 1;
-  padding: 16px 20px;
+  padding: 16px 20px 110px;
   overflow-y: auto;
 }
 
@@ -87,11 +89,13 @@
 
 .cita-card {
   background: #fff;
-  width: 80%;
+  width: 100%;
+  max-width: 480px;
   border-radius: 14px;
   padding: 16px 20px;
   margin-bottom: 14px;
   box-shadow: 0 2px 10px rgba(0,0,0,.08);
+  box-sizing: border-box;
 }
 
 .cita-header {
@@ -99,6 +103,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .cita-nombre {
@@ -115,6 +121,7 @@
   background: #e8f5e9;
   color: #2e7d32;
   letter-spacing: .5px;
+  white-space: nowrap;
 }
 
 .cita-info {
@@ -128,6 +135,8 @@
   justify-content: space-between;
   align-items: center;
   margin-top: 14px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .btn-cancelar-cita {
@@ -151,11 +160,18 @@
 }
 
 .bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   background: #fff;
   display: flex;
   justify-content: space-around;
   padding: 10px 0 16px;
   border-top: 1px solid #f0e0e6;
+  box-sizing: border-box;
+  z-index: 100;
 }
 
 .nav-item {
@@ -180,3 +196,22 @@
 }
 
 .nav-icon-active { opacity: 1; }
+
+/* ── Celulares muy pequeños (hasta 380px) ────────────────────────────────── */
+@media (max-width: 380px) {
+  .citas-content {
+    padding: 14px 16px 110px;
+  }
+
+  .cita-card {
+    padding: 14px 16px;
+  }
+
+  .cita-nombre {
+    font-size: 16px;
+  }
+
+  .cita-price {
+    font-size: 18px;
+  }
+}

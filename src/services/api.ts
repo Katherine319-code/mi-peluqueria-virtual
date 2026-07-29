@@ -158,3 +158,17 @@ export const actualizarContacto = async (
   const { data } = await api.put(`/api/usuarios/${id}`, datos);
   return data;
 };
+
+export const solicitarRecuperacion = async (correo: string): Promise<string> => {
+  const { data } = await api.post('/api/auth/olvide-password', { correo });
+  return data;
+};
+
+export const restablecerPassword = async (
+  correo: string,
+  codigo: string,
+  nuevaPassword: string
+): Promise<string> => {
+  const { data } = await api.post('/api/auth/restablecer-password', { correo, codigo, nuevaPassword });
+  return data;
+};

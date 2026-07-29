@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   background: #fff;
+  font-family: 'Poppins', sans-serif;
 }
 
 .auth-header {
@@ -26,7 +27,8 @@
 }
 
 .home-search-input {
-  width: 30%;
+  width: 100%;
+  max-width: 320px;
   background: #fff;
   border: none;
   border-radius: 22px;
@@ -35,6 +37,7 @@
   color: #555;
   outline: none;
   font-family: inherit;
+  box-sizing: border-box;
 }
 
 .home-content {
@@ -44,7 +47,7 @@
   align-items: center;
   justify-content: center;
   gap: 14px;
-  padding: 30px 20px;
+  padding: 30px 20px 100px;
   background: #fff;
 }
 
@@ -77,11 +80,18 @@
 }
 
 .bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   background: #fff;
   display: flex;
   justify-content: space-around;
   padding: 10px 0 16px;
   border-top: 1px solid #f0e0e6;
+  box-sizing: border-box;
+  z-index: 100;
 }
 
 .nav-item {
@@ -111,4 +121,27 @@
 
 .nav-active .nav-icon-img {
   opacity: 1;
+}
+
+/* ── Celulares muy pequeños (hasta 380px) ────────────────────────────────── */
+@media (max-width: 380px) {
+  .avatar-circle {
+    width: 96px;
+    height: 96px;
+    font-size: 30px;
+  }
+
+  .home-greeting {
+    font-size: 18px;
+  }
+
+  .nav-item {
+    padding: 0 8px;
+    font-size: 13px;
+  }
+
+  .nav-icon-img {
+    width: 22px;
+    height: 22px;
+  }
 }

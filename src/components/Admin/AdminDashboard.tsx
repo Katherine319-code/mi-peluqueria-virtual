@@ -18,6 +18,8 @@ interface Props {
   onLogout: () => void;
 }
 
+const CITAS_POR_PAGINA = 8;
+
 const AdminDashboard: React.FC<Props> = ({ user, onLogout }) => {
   const [servicios, setServicios] = useState<Servicio[]>([]);
   const [estilistas, setEstilistas] = useState<Estilista[]>([]);
@@ -31,6 +33,7 @@ const AdminDashboard: React.FC<Props> = ({ user, onLogout }) => {
     password: '',
     especialidad: '',
   });
+  const [paginaCitas, setPaginaCitas] = useState(1);
 
   const cargarDatos = async () => {
     const [serviciosData, estilistasData, citasData] = await Promise.all([
@@ -48,6 +51,16 @@ const AdminDashboard: React.FC<Props> = ({ user, onLogout }) => {
   }, []);
 
   const estilistasActivos = estilistas.filter(e => e.activo !== false);
+
+  const totalPaginasCitas = Math.max(1, Math.ceil(citas.length / CITAS_POR_PAGINA));
+  const citasPaginadas = citas.slice(
+    (paginaCitas - 1) * CITAS_POR_PAGINA,
+    paginaCitas * CITAS_POR_PAGINA
+  );
+
+  useEffect(() => {
+    if (paginaCitas > totalPaginasCitas) setPaginaCitas(totalPaginasCitas);
+  }, [totalPaginasCitas, paginaCitas]);
 
   const guardarServicio = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -141,7 +154,7 @@ const AdminDashboard: React.FC<Props> = ({ user, onLogout }) => {
         <section className="admin-panel admin-table-panel">
           <h2>Agenda general</h2>
           <div className="admin-table">
-            {citas.map(cita => (
+            {citasPaginadas.map(cita => (
               <div className="admin-row" key={cita.id}>
                 <div>
                   <strong>{cita.servicio.nombre}</strong>
@@ -157,6 +170,26 @@ const AdminDashboard: React.FC<Props> = ({ user, onLogout }) => {
             ))}
             {citas.length === 0 && <p className="admin-empty">Aun no hay citas registradas.</p>}
           </div>
+
+          {citas.length > CITAS_POR_PAGINA && (
+            <div className="admin-pagination">
+              <button
+                onClick={() => setPaginaCitas(p => Math.max(1, p - 1))}
+                disabled={paginaCitas === 1}
+              >
+                ← Anterior
+              </button>
+              <span className="admin-pagination-info">
+                Pagina {paginaCitas} de {totalPaginasCitas}
+              </span>
+              <button
+                onClick={() => setPaginaCitas(p => Math.min(totalPaginasCitas, p + 1))}
+                disabled={paginaCitas === totalPaginasCitas}
+              >
+                Siguiente →
+              </button>
+            </div>
+          )}
         </section>
 
         <section className="admin-panel admin-table-panel">
@@ -197,4 +230,3 @@ const AdminDashboard: React.FC<Props> = ({ user, onLogout }) => {
 };
 
 export default AdminDashboard;
-

@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   background: #fff;
+  font-family: 'Poppins', sans-serif;
 }
 
 
@@ -28,7 +29,8 @@
 }
 
 .booking-search-input {
-  width: 220px;
+  width: 100%;
+  max-width: 280px;
   background: #fff;
   border: none;
   border-radius: 22px;
@@ -37,14 +39,15 @@
   color: #555;
   outline: none;
   font-family: inherit;
+  box-sizing: border-box;
 }
 
 .booking-body {
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  padding: 24px 40px;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  padding: 20px 20px 110px;
   align-items: start;
 }
 
@@ -68,15 +71,17 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 6px;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .sel-name {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
 }
 
 .sel-price {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: #c9822a;
 }
@@ -103,7 +108,8 @@
 .input-with-icon,
 .select-with-arrow {
   position: relative;
-   width: 400px;
+  width: 100%;
+  max-width: 400px;
 }
 
 .input-with-icon input,
@@ -118,6 +124,7 @@
   background: #fff;
   color: #333;
   appearance: none;
+  box-sizing: border-box;
 }
 
 .field-icon {
@@ -174,11 +181,18 @@
 .btn-confirm:hover { background: #c4607a; }
 
 .bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   background: #fff;
   display: flex;
   justify-content: space-around;
   padding: 10px 0 16px;
   border-top: 1px solid #f0e0e6;
+  box-sizing: border-box;
+  z-index: 100;
 }
 
 .nav-item {
@@ -203,3 +217,28 @@
 }
 
 .nav-icon-active { opacity: 1; }
+
+/* ── Tablet y desktop (768px en adelante): 2 columnas lado a lado ────────── */
+@media (min-width: 768px) {
+  .booking-body {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding: 24px 40px 40px;
+  }
+
+  .sel-name,
+  .sel-price {
+    font-size: 20px;
+  }
+}
+
+/* ── Celulares muy pequeños (hasta 380px) ────────────────────────────────── */
+@media (max-width: 380px) {
+  .booking-body {
+    padding: 16px 16px 110px;
+  }
+
+  .selected-card {
+    padding: 14px 16px;
+  }
+}

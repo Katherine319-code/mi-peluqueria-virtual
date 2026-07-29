@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   background: #f5f5f5;
+  font-family: 'Poppins', sans-serif;
 }
 
 
@@ -23,15 +24,17 @@
 
 .services-top-bar {
   background: #e8a0b4;
-  padding: 20px 20px;
+  padding: 16px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 22px;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .services-search {
-  width: 220px;
+  flex: 1;
+  min-width: 160px;
   border: none;
   border-radius: 22px;
   padding: 9px 18px;
@@ -40,12 +43,13 @@
   font-family: inherit;
   color: #555;
   background: #fff;
-  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .filter-row {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .filter-btn {
@@ -59,6 +63,7 @@
   font-family: inherit;
   font-weight: 500;
   transition: .2s;
+  white-space: nowrap;
 }
 
 .filter-active {
@@ -69,9 +74,9 @@
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: 16px;
-  padding: 20px;
+  padding: 20px 20px 100px;
   flex: 1;
   overflow-y: auto;
 }
@@ -140,11 +145,18 @@
 .btn-reservar:hover { background: #c4607a; }
 
 .bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   background: #fff;
   display: flex;
   justify-content: space-around;
   padding: 10px 0 16px;
   border-top: 1px solid #f0e0e6;
+  box-sizing: border-box;
+  z-index: 100;
 }
 
 .nav-item {
@@ -170,3 +182,34 @@
 }
 
 .nav-icon-active { opacity: 1; }
+
+/* ── Tablet (600px en adelante): 2 columnas ──────────────────────────────── */
+@media (min-width: 600px) {
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Desktop (900px en adelante): 3 columnas ─────────────────────────────── */
+@media (min-width: 900px) {
+  .services-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ── Celulares muy pequeños (hasta 380px) ────────────────────────────────── */
+@media (max-width: 380px) {
+  .services-top-bar {
+    padding: 14px 16px;
+  }
+
+  .nav-item {
+    padding: 0 8px;
+    font-size: 13px;
+  }
+
+  .nav-icon-img {
+    width: 22px;
+    height: 22px;
+  }
+}

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Usuario, LoginRequest } from '../../types';
-import { registrarUsuario, loginUsuario, loginConGoogle } from '../../services/api';
+import { registrarUsuario, loginUsuario, loginConGoogle, solicitarRecuperacion, restablecerPassword } from '../../services/api';
 import { GOOGLE_CLIENT_ID } from '../../config';
 import './AuthScreen.css';
 import logo from '../../assets/img/logo.png';
@@ -16,8 +16,10 @@ declare global {
   }
 }
 
+type Modo = 'login' | 'register' | 'olvide-solicitar' | 'olvide-confirmar';
+
 const AuthScreen: React.FC<Props> = ({ onLogin }) => {
-  const [tab, setTab] = useState<'login' | 'register'>('login');
+  const [modo, setModo] = useState<Modo>('login');
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
@@ -27,11 +29,18 @@ const AuthScreen: React.FC<Props> = ({ onLogin }) => {
     nombres: '', apellidos: '', cedula: '', correo: '', contrasena: '', confirmar: '',
   });
 
+  const [correoRecuperar, setCorreoRecuperar] = useState('');
+  const [codigoRecuperar, setCodigoRecuperar] = useState('');
+  const [nuevaPassword, setNuevaPassword] = useState('');
+  const [confirmarNuevaPassword, setConfirmarNuevaPassword] = useState('');
+  const [enviando, setEnviando] = useState(false);
+
   const googleBtnRef = useRef<HTMLDivElement>(null);
-const onLoginRef = useRef(onLogin);
-useEffect(() => {
-  onLoginRef.current = onLogin;
-}, [onLogin]);
+  const onLoginRef = useRef(onLogin);
+
+  useEffect(() => {
+    onLoginRef.current = onLogin;
+  }, [onLogin]);
 
   // ── Inicializa Google Identity Services una sola vez ──────────────────────
   useEffect(() => {
@@ -56,8 +65,6 @@ useEffect(() => {
           }
         },
       });
-      // Renderiza el boton real de Google, oculto, para poder "disparlo"
-      // desde nuestros botones personalizados con el mismo estilo del resto de la app.
       window.google.accounts.id.renderButton(googleBtnRef.current, {
         type: 'standard',
         theme: 'outline',
@@ -79,9 +86,14 @@ useEffect(() => {
   }, []);
 
   const handleGoogleClick = () => {
-    // Busca el boton real (invisible) que Google renderizo y le hace clic
     const realBtn = googleBtnRef.current?.querySelector('div[role="button"]') as HTMLElement | null;
     realBtn?.click();
+  };
+
+  const cambiarModo = (nuevoModo: Modo) => {
+    setModo(nuevoModo);
+    setError('');
+    setSuccessMsg('');
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -112,12 +124,51 @@ useEffect(() => {
     if (usuario.contrasena !== confirmar) { setError('Las contraseñas no coinciden'); return; }
     try {
       await registrarUsuario(usuario);
-      setTab('login');
+      setModo('login');
       setError('');
       setLoginData({ correo: usuario.correo, contrasena: '' });
       setSuccessMsg('¡Registro exitoso! Ahora inicia sesión.');
     } catch (err: any) {
       setError(err?.response?.data || 'No se pudo conectar al servidor.');
+    }
+  };
+
+  const handleSolicitarCodigo = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setSuccessMsg('');
+    if (!correoRecuperar) { setError('Ingresa tu correo'); return; }
+    setEnviando(true);
+    try {
+      await solicitarRecuperacion(correoRecuperar);
+      setSuccessMsg('Te enviamos un codigo de verificacion a tu correo.');
+      setModo('olvide-confirmar');
+    } catch (err: any) {
+      setError(err?.response?.data || 'No se pudo enviar el codigo.');
+    } finally {
+      setEnviando(false);
+    }
+  };
+
+  const handleRestablecer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setSuccessMsg('');
+    if (!codigoRecuperar || !nuevaPassword) { setError('Completa todos los campos'); return; }
+    if (nuevaPassword !== confirmarNuevaPassword) { setError('Las contraseñas no coinciden'); return; }
+    setEnviando(true);
+    try {
+      await restablecerPassword(correoRecuperar, codigoRecuperar, nuevaPassword);
+      setSuccessMsg('Contraseña actualizada. Ya puedes iniciar sesion.');
+      setLoginData({ correo: correoRecuperar, contrasena: '' });
+      setCodigoRecuperar('');
+      setNuevaPassword('');
+      setConfirmarNuevaPassword('');
+      setModo('login');
+    } catch (err: any) {
+      setError(err?.response?.data || 'No se pudo actualizar la contraseña.');
+    } finally {
+      setEnviando(false);
     }
   };
 
@@ -128,30 +179,31 @@ return (
       <img src={logo} alt="Mi Peluquería Virtual" />
     </header>
 
-    {/* Boton real de Google, invisible: lo disparamos desde nuestros botones estilizados */}
     <div ref={googleBtnRef} style={{ position: 'absolute', top: -9999, left: -9999 }} />
 
       <div className="auth-body">
         <div className="auth-card">
-          <div className="tab-row">
-            <button
-              className={`tab ${tab === 'login' ? 'tab-active-dark' : 'tab-inactive'}`}
-              onClick={() => { setTab('login'); setError(''); setSuccessMsg(''); }}
-            >
-              Iniciar Sesión
-            </button>
-            <button
-              className={`tab ${tab === 'register' ? 'tab-active-pink' : 'tab-inactive'}`}
-              onClick={() => { setTab('register'); setError(''); setSuccessMsg(''); }}
-            >
-              Regístrate
-            </button>
-          </div>
+          {(modo === 'login' || modo === 'register') && (
+            <div className="tab-row">
+              <button
+                className={`tab ${modo === 'login' ? 'tab-active-dark' : 'tab-inactive'}`}
+                onClick={() => cambiarModo('login')}
+              >
+                Iniciar Sesión
+              </button>
+              <button
+                className={`tab ${modo === 'register' ? 'tab-active-pink' : 'tab-inactive'}`}
+                onClick={() => cambiarModo('register')}
+              >
+                Regístrate
+              </button>
+            </div>
+          )}
 
           {error && <div className="error-msg">{error}</div>}
           {successMsg && <div className="success-msg">{successMsg}</div>}
 
-          {tab === 'login' && (
+          {modo === 'login' && (
             <form onSubmit={handleLogin}>
               <div className="field-group">
                 <label>Correo Electronico</label>
@@ -177,12 +229,14 @@ return (
                 Continuar con Google
               </button>
               <div className="center-link">
-                <span className="link-pink">Olvidaste tu contraseña?</span>
+                <span className="link-pink" onClick={() => cambiarModo('olvide-solicitar')}>
+                  Olvidaste tu contraseña?
+                </span>
               </div>
             </form>
           )}
 
-          {tab === 'register' && (
+          {modo === 'register' && (
             <form onSubmit={handleRegister}>
               <div className="field-row">
                 <div className="field-group">
@@ -229,8 +283,75 @@ return (
               </button>
               <div className="center-link">
                 Ya tienes una cuenta?{' '}
-                <span className="link-pink" onClick={() => setTab('login')}>
+                <span className="link-pink" onClick={() => cambiarModo('login')}>
                   Inicia Sesion Aqui
+                </span>
+              </div>
+            </form>
+          )}
+
+          {modo === 'olvide-solicitar' && (
+            <form onSubmit={handleSolicitarCodigo}>
+              <h2 className="auth-subtitle">Recuperar contraseña</h2>
+              <p className="auth-hint">Ingresa tu correo y te enviaremos un codigo de verificacion.</p>
+              <div className="field-group">
+                <label>Correo Electronico</label>
+                <input
+                  type="email"
+                  placeholder="@correo.com"
+                  value={correoRecuperar}
+                  onChange={e => setCorreoRecuperar(e.target.value)}
+                />
+              </div>
+              <button type="submit" className="btn-dark" disabled={enviando}>
+                {enviando ? 'Enviando...' : 'Enviar codigo'}
+              </button>
+              <div className="center-link">
+                <span className="link-pink" onClick={() => cambiarModo('login')}>
+                  ← Volver a iniciar sesion
+                </span>
+              </div>
+            </form>
+          )}
+
+          {modo === 'olvide-confirmar' && (
+            <form onSubmit={handleRestablecer}>
+              <h2 className="auth-subtitle">Ingresa el codigo</h2>
+              <p className="auth-hint">Revisa tu correo ({correoRecuperar}) y escribe el codigo de 6 digitos.</p>
+              <div className="field-group">
+                <label>Codigo de verificacion</label>
+                <input
+                  type="text"
+                  placeholder="123456"
+                  maxLength={6}
+                  value={codigoRecuperar}
+                  onChange={e => setCodigoRecuperar(e.target.value)}
+                />
+              </div>
+              <div className="field-group">
+                <label>Nueva contraseña</label>
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  value={nuevaPassword}
+                  onChange={e => setNuevaPassword(e.target.value)}
+                />
+              </div>
+              <div className="field-group">
+                <label>Confirmar contraseña</label>
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  value={confirmarNuevaPassword}
+                  onChange={e => setConfirmarNuevaPassword(e.target.value)}
+                />
+              </div>
+              <button type="submit" className="btn-dark" disabled={enviando}>
+                {enviando ? 'Actualizando...' : 'Restablecer contraseña'}
+              </button>
+              <div className="center-link">
+                <span className="link-pink" onClick={() => cambiarModo('olvide-solicitar')}>
+                  ¿No te llego el codigo? Reenviar
                 </span>
               </div>
             </form>
@@ -242,3 +363,4 @@ return (
 };
 
 export default AuthScreen;
+
