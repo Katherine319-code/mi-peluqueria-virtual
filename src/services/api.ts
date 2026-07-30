@@ -6,6 +6,15 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 const mapServicio = (s: any): Servicio => ({
   id: Number(s.id),
   nombre: s.nombre,
@@ -125,7 +134,7 @@ export const actualizarEstadoCita = async (id: number, estado: Cita['estado']): 
 };
 
 export const cancelarCitaApi = async (id: number): Promise<void> => {
-  await api.delete(`/api/citas/${id}`);
+  await api.put(`/api/citas/${id}/estado`, { estado: 'CANCELADA' });
 };
 
 export const obtenerEstilistaPorUsuario = async (usuarioId: number): Promise<Estilista> => {

@@ -26,7 +26,7 @@ const App: React.FC = () => {
   const [fechaSeleccionada, setFechaSeleccionada] = useState('');
 
   const goTo = (s: Screen) => {
-    if (s === 'auth') { setUser(null); setCitas([]); }
+    if (s === 'auth') { setUser(null); setCitas([]); localStorage.removeItem('token'); }
     setScreen(s);
   };
 
@@ -37,6 +37,7 @@ const App: React.FC = () => {
 
   const handleLogin = async (u: Usuario) => {
     setUser(u);
+    if (u.token) localStorage.setItem('token', u.token);
     if (u.rol === 'ADMIN') {
       setScreen('admin');
     } else if (u.rol === 'ESTILISTA' && u.id) {
