@@ -242,3 +242,13 @@
     padding: 14px 16px;
   }
 }
+
+.booking-error {
+  background: #fdecea;
+  color: #c62828;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  margin-bottom: 14px;
+  text-align: center;
+}

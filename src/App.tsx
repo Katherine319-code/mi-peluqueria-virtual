@@ -58,8 +58,8 @@ const App: React.FC = () => {
     setPendingCita(cita); setScreen('payment');
   };
 
-  const handlePagar = async (metodo: string) => {
-    if (!pendingCita || !user?.id) return;
+const handlePagar = async (metodo: string): Promise<boolean> => {
+   if (!pendingCita || !user?.id) return false;
     try {
       const saved = await guardarCita({
         clienteId: user.id,

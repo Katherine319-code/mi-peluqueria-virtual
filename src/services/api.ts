@@ -181,3 +181,17 @@ export const restablecerPassword = async (
   const { data } = await api.post('/api/auth/restablecer-password', { correo, codigo, nuevaPassword });
   return data;
 };
+
+export const actualizarServicio = async (
+  id: number,
+  servicio: Omit<Servicio, 'id' | 'rating' | 'categoria'>
+): Promise<Servicio> => {
+  const { data } = await api.put(`/api/servicios/${id}`, {
+    nombre: servicio.nombre,
+    descripcion: servicio.descripcion,
+    precio: servicio.precio,
+    duracionMinutos: servicio.duracion,
+    activo: true,
+  });
+  return mapServicio(data);
+};

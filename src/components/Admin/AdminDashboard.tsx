@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Cita, Estilista, Servicio, Usuario } from '../../types';
 import {
   actualizarEstadoCita,
+  actualizarServicio,
   crearEstilista,
   crearServicio,
   desactivarEstilista,
@@ -20,12 +21,15 @@ interface Props {
 
 const CITAS_POR_PAGINA = 8;
 
+const SERVICIO_FORM_VACIO = { nombre: '', descripcion: '', precio: 0, duracion: 45 };
+
 const AdminDashboard: React.FC<Props> = ({ user, onLogout }) => {
   const [servicios, setServicios] = useState<Servicio[]>([]);
   const [estilistas, setEstilistas] = useState<Estilista[]>([]);
   const [citas, setCitas] = useState<Cita[]>([]);
   const [mensaje, setMensaje] = useState('');
-  const [servicioForm, setServicioForm] = useState({ nombre: '', descripcion: '', precio: 0, duracion: 45 });
+  const [servicioForm, setServicioForm] = useState(SERVICIO_FORM_VACIO);
+  const [editandoServicioId, setEditandoServicioId] = useState<number | null>(null);
   const [estilistaForm, setEstilistaForm] = useState({
     nombre: '',
     apellido: '',
@@ -64,10 +68,32 @@ const AdminDashboard: React.FC<Props> = ({ user, onLogout }) => {
 
   const guardarServicio = async (event: React.FormEvent) => {
     event.preventDefault();
-    await crearServicio({ ...servicioForm });
-    setServicioForm({ nombre: '', descripcion: '', precio: 0, duracion: 45 });
-    setMensaje('Servicio creado correctamente.');
+    if (editandoServicioId) {
+      await actualizarServicio(editandoServicioId, { ...servicioForm });
+      setMensaje('Servicio actualizado correctamente.');
+      setEditandoServicioId(null);
+    } else {
+      await crearServicio({ ...servicioForm });
+      setMensaje('Servicio creado correctamente.');
+    }
+    setServicioForm(SERVICIO_FORM_VACIO);
     cargarDatos();
+  };
+
+  const iniciarEdicionServicio = (servicio: Servicio) => {
+    setServicioForm({
+      nombre: servicio.nombre,
+      descripcion: servicio.descripcion,
+      precio: servicio.precio,
+      duracion: servicio.duracion,
+    });
+    setEditandoServicioId(servicio.id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const cancelarEdicionServicio = () => {
+    setServicioForm(SERVICIO_FORM_VACIO);
+    setEditandoServicioId(null);
   };
 
   const guardarEstilista = async (event: React.FormEvent) => {
@@ -89,6 +115,7 @@ const AdminDashboard: React.FC<Props> = ({ user, onLogout }) => {
     if (!confirmar) return;
     await desactivarServicio(servicio.id);
     setMensaje(`Servicio "${servicio.nombre}" eliminado.`);
+    if (editandoServicioId === servicio.id) cancelarEdicionServicio();
     cargarDatos();
   };
 
@@ -128,14 +155,21 @@ const AdminDashboard: React.FC<Props> = ({ user, onLogout }) => {
 
         <section className="admin-grid">
           <form className="admin-panel" onSubmit={guardarServicio}>
-            <h2>Nuevo servicio</h2>
+            <h2>{editandoServicioId ? 'Editar servicio' : 'Nuevo servicio'}</h2>
             <input placeholder="Nombre" value={servicioForm.nombre} onChange={e => setServicioForm({ ...servicioForm, nombre: e.target.value })} required />
             <input placeholder="Descripcion" value={servicioForm.descripcion} onChange={e => setServicioForm({ ...servicioForm, descripcion: e.target.value })} required />
             <div className="admin-two-cols">
               <input type="number" placeholder="Precio" value={servicioForm.precio || ''} onChange={e => setServicioForm({ ...servicioForm, precio: Number(e.target.value) })} required />
               <input type="number" placeholder="Minutos" value={servicioForm.duracion} onChange={e => setServicioForm({ ...servicioForm, duracion: Number(e.target.value) })} required />
             </div>
-            <button>Crear servicio</button>
+            <div className="admin-form-actions">
+              <button type="submit">{editandoServicioId ? 'Guardar cambios' : 'Crear servicio'}</button>
+              {editandoServicioId && (
+                <button type="button" className="admin-btn-secundario" onClick={cancelarEdicionServicio}>
+                  Cancelar
+                </button>
+              )}
+            </div>
           </form>
 
           <form className="admin-panel" onSubmit={guardarEstilista}>
@@ -218,6 +252,7 @@ const AdminDashboard: React.FC<Props> = ({ user, onLogout }) => {
             {servicios.map(servicio => (
               <span key={servicio.id} className="admin-servicio-chip">
                 {servicio.nombre} · ${servicio.precio.toLocaleString('es-CO')} · {servicio.duracion} min
+                <button className="admin-chip-editar" onClick={() => iniciarEdicionServicio(servicio)}>✎</button>
                 <button className="admin-chip-eliminar" onClick={() => eliminarServicio(servicio)}>✕</button>
               </span>
             ))}

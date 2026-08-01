@@ -215,3 +215,58 @@
     font-size: 18px;
   }
 }
+
+.citas-tab-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.citas-tab {
+  background: #fff;
+  border: 1.5px solid #f0e0e6;
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+  cursor: pointer;
+  font-family: inherit;
+  transition: .2s;
+}
+
+.citas-tab-active {
+  background: #1a1a2e;
+  border-color: #1a1a2e;
+  color: #fff;
+}
+
+.badge-pendiente {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: #FAEEDA;
+  color: #854F0B;
+  letter-spacing: .5px;
+}
+
+.badge-finalizada {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  letter-spacing: .5px;
+}
+
+.badge-cancelada {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: #fdecea;
+  color: #c62828;
+  letter-spacing: .5px;
+}

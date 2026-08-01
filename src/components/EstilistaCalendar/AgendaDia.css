@@ -192,3 +192,60 @@
     font-size: 10px;
   }
 }
+
+.agenda-item-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.agenda-btn-finalizar,
+.agenda-btn-cancelar {
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: .2s;
+}
+
+.agenda-btn-finalizar {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.agenda-btn-finalizar:hover {
+  background: #c8e6c9;
+}
+
+.agenda-btn-cancelar {
+  background: #fdecea;
+  color: #c62828;
+}
+
+.agenda-btn-cancelar:hover {
+  background: #f8d7d3;
+}
+
+.agenda-btn-finalizar:disabled,
+.agenda-btn-cancelar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.badge-finalizada {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.agenda-mensaje {
+  background: #fdf1f4;
+  color: #9f6072;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  text-align: center;
+}

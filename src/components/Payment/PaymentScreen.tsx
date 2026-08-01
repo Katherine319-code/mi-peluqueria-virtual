@@ -12,11 +12,19 @@ import './PaymentScreen.css';
 interface Props {
   cita: Omit<Cita, 'id' | 'estado'>;
   onNavigate: (screen: Screen) => void;
-  onPagar: (metodo: string) => void;
+  onPagar: (metodo: string) => Promise<boolean>;
 }
 
 const PaymentScreen: React.FC<Props> = ({ cita, onNavigate, onPagar }) => {
   const [metodo, setMetodo] = useState<'EFECTIVO' | 'PSE'>('EFECTIVO');
+  const [procesando, setProcesando] = useState(false);
+
+  const handlePagarClick = async () => {
+    if (procesando) return;
+    setProcesando(true);
+    const exito = await onPagar(metodo);
+    if (!exito) setProcesando(false);
+  };
 
   return (
     <div className="payment-screen">
@@ -51,7 +59,7 @@ const PaymentScreen: React.FC<Props> = ({ cita, onNavigate, onPagar }) => {
 
           <div
             className={`pay-option ${metodo === 'EFECTIVO' ? 'pay-selected' : ''}`}
-            onClick={() => setMetodo('EFECTIVO')}
+            onClick={() => !procesando && setMetodo('EFECTIVO')}
           >
             <img src={cashIcon} alt="Efectivo" className="pay-img" />
             <div>
@@ -62,7 +70,7 @@ const PaymentScreen: React.FC<Props> = ({ cita, onNavigate, onPagar }) => {
 
           <div
             className={`pay-option ${metodo === 'PSE' ? 'pay-selected' : ''}`}
-            onClick={() => setMetodo('PSE')}
+            onClick={() => !procesando && setMetodo('PSE')}
           >
             <img src={bankIcon} alt="Bancos" className="pay-img" />
             <div>
@@ -72,8 +80,12 @@ const PaymentScreen: React.FC<Props> = ({ cita, onNavigate, onPagar }) => {
           </div>
 
           <div className="pay-btns">
-            <button className="btn-cancel-pay" onClick={() => onNavigate('booking')}>Cancelar</button>
-            <button className="btn-pay" onClick={() => onPagar(metodo)}>Pagar</button>
+            <button className="btn-cancel-pay" onClick={() => onNavigate('booking')} disabled={procesando}>
+              Cancelar
+            </button>
+            <button className="btn-pay" onClick={handlePagarClick} disabled={procesando}>
+              {procesando ? 'Procesando...' : 'Pagar'}
+            </button>
           </div>
         </div>
       </div>
@@ -88,7 +100,7 @@ const PaymentScreen: React.FC<Props> = ({ cita, onNavigate, onPagar }) => {
         <div className="nav-item nav-active" onClick={() => onNavigate('services')}>
           <img src={servicesIcon} alt="Servicios" className="nav-icon-img nav-icon-active" /><span>Servicios</span>
         </div>
-        <div className="nav-item" onClick={() => onNavigate('auth')}>
+        <div className="nav-item" onClick={() => onNavigate('profile')}>
           <img src={userIcon} alt="Perfil" className="nav-icon-img" /><span>Perfil</span>
         </div>
       </nav>

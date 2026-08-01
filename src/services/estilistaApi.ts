@@ -44,3 +44,10 @@ function toISO(fecha: string): string {
   const [d, m, y] = fecha.split('/');
   return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
 }
+
+export const actualizarEstadoCitaEstilista = async (
+  id: number,
+  estado: string
+): Promise<void> => {
+  await api.put(`/api/citas/${id}/estado`, { estado });
+};
